@@ -134,11 +134,11 @@ If you are having trouble of loading the fonts please uncomment the line in your
 
 #+begin_src emacs-lisp
 (set-face-attribute 'default nil :font "JetBrains Mono" :height 160 :weight 'medium)
-(set-face-attribute 'variable-pitch nil :font "Ubuntu" :height 120 :weight 'medium)
-(set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 120 :weight 'medium)
-(set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-(set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
-(setq-default line-spacing 0.12)
+;; (set-face-attribute 'variable-pitch nil :font "Ubuntu" :height 120 :weight 'medium)
+;; (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 120 :weight 'medium)
+;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+;; (setq-default line-spacing 0.12)
 #+end_src
 
 ** ORG MODE
@@ -928,11 +928,12 @@ one, an error is signaled."
 (defun my/apply-font-settings (frame)
   (with-selected-frame frame
     (set-face-attribute 'default nil :font "JetBrains Mono" :height 160  :weight 'medium)
-    (set-face-attribute 'variable-pitch nil :font "Ubuntu" :height 100 :weight 'medium)
-    (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 100 :weight 'medium)
-    (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-    (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
-    (setq-default line-spacing 0.12)))
+    ;; (set-face-attribute 'variable-pitch nil :font "Ubuntu" :height 100 :weight 'medium)
+    ;; (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 100 :weight 'medium)
+    ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+    ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
+    ;; (setq-default line-spacing 0.12)
+))
 (add-hook 'after-make-frame-functions #'my/apply-font-settings)
 #+end_src
 
