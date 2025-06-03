@@ -28,6 +28,7 @@
   - [[#exwm][EXWM]]
   - [[#exwem-notification][EXWEM NOTIFICATION]]
   - [[#shortcut-for-lunching-application][SHORTCUT FOR LUNCHING APPLICATION]]
+  - [[#customized-function-name][CUSTOMIZED FUNCTION NAME]]
   - [[#exwm-keybindings][EXWM KEYBINDINGS]]
 
 * SETTING UP EMACS 
@@ -127,7 +128,7 @@
 
 
 ** FONTS 
-If you are having trouble of loading the fonts please uncomment the line in your early-init.el file
+If you are having trouble of loading the themes please add those line in your early-init.el file
 #+begin_example
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
 #+end_example
@@ -162,6 +163,7 @@ If you are having trouble of loading the fonts please uncomment the line in your
 
 (require 'org-tempo)
 #+end_src
+
 *** ORG MODE GRAphical TWeaks
 #+begin_src emacs-lisp
 (setq org-edit-src-content-indentation 0) ;; set src block automatic indent to 0 instead of 2.
@@ -571,10 +573,10 @@ If you are having trouble of loading the fonts please uncomment the line in your
 
 (define-key global-map (kbd "M-m") nil)
 
-(define-key global-map (kbd "M-m m") #'my/power-menu)
-(define-key global-map (kbd "M-m l") #'my/lock-screen)
-
-
+(define-key global-map (kbd "M-m m") #'Power-menu)
+(define-key global-map (kbd "M-m l") #'Lock-screen)
+(define-key global-map (kbd "M-m L") #'Update-lockscreen-bg)
+(define-key global-map (kbd "M-m s") #'Update-sddm-wallpaper)
 
 #+end_src
 
@@ -932,8 +934,8 @@ one, an error is signaled."
     ;; (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 100 :weight 'medium)
     ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
     ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
-    ;; (setq-default line-spacing 0.12)
-))
+    ;; (setq-default line-spacing 0.12))
+    )
 (add-hook 'after-make-frame-functions #'my/apply-font-settings)
 #+end_src
 
@@ -953,7 +955,6 @@ one, an error is signaled."
 (add-to-list 'load-path "~/.config/emacs/scripts/")
 (require 'app-launcher)
 #+end_src
-
 *** EXWM POWER-MENU
 #+begin_src emacs-lisp
 (defun my/power-menu ()
@@ -973,6 +974,28 @@ one, an error is signaled."
   "Lock the screen using i3lock."
   (interactive)
   (start-process "betterlockscreen" nil "betterlockscreen" "--lock"))
+
+
+(defun my/update-lockscreen-background ()
+  "Update betterlockscreen background using the external script and notify via dunst."
+  (interactive)
+  (let* ((proc-name "update-lockscreen-bg")
+         (script-path "~/.config/emacs/scripts/betterlockscreen-wallpaper-update.sh")
+         (proc (start-process-shell-command
+                proc-name
+                "*betterlockscreen-output*"
+                (concat "bash " script-path))))
+    ;; Notify when the update starts
+    (start-process-shell-command "notify-start" nil
+                                  "notify-send 'Betterlockscreen' '🔄 Updating lockscreen background...' -u low")
+
+    ;; Notify when the update finishes
+    (set-process-sentinel
+     proc
+     (lambda (_process event)
+       (when (string= event "finished\n")
+         (start-process-shell-command "notify-end" nil
+                                      "notify-send 'Betterlockscreen' '✅ Background update complete!' -u normal"))))))
 
 
 ;; ====== KEYBINDING =====
@@ -1020,12 +1043,12 @@ one, an error is signaled."
 (defun brightness-increase ()
   (interactive)
   (start-process-shell-command "brightness up" nil
-   "brightnessctl set +10% && notify-send 'Brightness ↑' \"$(brightnessctl g | awk '{print int($1/10)*10 \"%\"}')\""))
+   "brightnessctl set +3% && notify-send 'Brightness ↑' \"$(brightnessctl g | awk '{print int($1/10)*10 \"%\"}')\""))
 
 (defun brightness-decrease ()
   (interactive)
   (start-process-shell-command "brightness down" nil
-   "brightnessctl set 10%- && notify-send 'Brightness ↓' \"$(brightnessctl g | awk '{print int($1/10)*10 \"%\"}')\""))
+   "brightnessctl set 3%- && notify-send 'Brightness ↓' \"$(brightnessctl g | awk '{print int($1/10)*10 \"%\"}')\""))
 
 
 ;; ====== KEYBINDING FOR EMACS =====
@@ -1036,6 +1059,36 @@ one, an error is signaled."
 ;; ====== KEYBINDING FOR EXWM =====
 (define-key exwm-mode-map (kbd "<XF86MonBrightnessUp>") 'brightness-increase)
 (define-key exwm-mode-map (kbd "<XF86MonBrightnessDown>") 'brightness-decrease)
+#+end_src
+*** SDDM BACKGROUND UPDATE
+#+begin_src emacs-lisp
+(defun my/update-sddm-wallpaper ()
+  "Update SDDM wallpaper using external script in alacritty and notify via dunst."
+  (interactive)
+  (let* ((proc-name "update-sddm-wallpaper")
+         (output-buffer "*sddm-wallpaper-output*")
+         (script-path (expand-file-name "~/.config/emacs/scripts/update-sddm-wallpaper.sh"))
+         (terminal-command
+          (format "alacritty -e bash -c 'bash %s; read -n 1 -s -r -p \"[✓] Press any key to close...\"'" script-path))
+         (proc (start-process-shell-command proc-name output-buffer terminal-command)))
+    
+    ;; Notify when update starts
+    (start-process-shell-command "notify-sddm-start" nil
+                                  "notify-send 'SDDM' '🖼️ Updating SDDM wallpaper...' -u low")
+
+    ;; Notify when process finishes
+    (set-process-sentinel
+     proc
+     (let ((buf output-buffer)) ;; 👈 pass buffer into lambda
+       (lambda (_process event)
+         (when (get-buffer buf)
+           (kill-buffer buf))
+         (if (string= event "finished\n")
+             (start-process-shell-command "notify-sddm-end" nil
+                                          "notify-send 'SDDM' '✅ SDDM wallpaper updated successfully!' -u normal")
+           (start-process-shell-command "notify-sddm-fail" nil
+                                        "notify-send 'SDDM' '❌ SDDM wallpaper update failed!' -u critical")))))))
+
 #+end_src
 
 ** SHORTCUT FOR LUNCHING APPLICATION 
@@ -1103,6 +1156,22 @@ one, an error is signaled."
 
 #+end_src
 
+** CUSTOMIZED FUNCTION NAME
+#+begin_src emacs-lisp
+;; Power Menu
+(defalias 'Power-menu #'my/power-menu)
+
+;; Lock Screen
+(defalias 'Lock-screen #'my/lock-screen)
+
+;; Update Lock Screen Background
+(defalias 'Update-lockscreen-bg #'my/update-lockscreen-background)
+
+;; Update SDDM Wallpaper
+(defalias 'Update-sddm-wallpaper #'my/update-sddm-wallpaper)
+
+#+end_src
+
 ** EXWM KEYBINDINGS
 #+begin_src emacs-lisp
 ;; Unbind M-b from any previous behavior (like backward-word)
@@ -1163,6 +1232,9 @@ one, an error is signaled."
 ;; ===== personal keybinding for menus =====
 (define-key exwm-mode-map (kbd "M-m") nil)
 
-(define-key exwm-mode-map (kbd "M-m m") #'my/power-menu)
-(define-key exwm-mode-map (kbd "M-m l") #'my/lock-screen)
+(define-key exwm-mode-map (kbd "M-m m") #'Power-menu)
+(define-key exwm-mode-map (kbd "M-m l") #'Lock-screen)
+(define-key exwm-mode-map (kbd "M-m b") #'Update-lockscreen-bg)
+(define-key exwm-mode-map (kbd "M-m p") #'Update-sddm-wallpaper)
+
 #+end_src
