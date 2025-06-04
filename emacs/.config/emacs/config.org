@@ -934,8 +934,8 @@ one, an error is signaled."
     ;; (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 100 :weight 'medium)
     ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
     ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
-    ;; (setq-default line-spacing 0.12))
-    )
+    ;; (setq-default line-spacing 0.12)
+    ))
 (add-hook 'after-make-frame-functions #'my/apply-font-settings)
 #+end_src
 
