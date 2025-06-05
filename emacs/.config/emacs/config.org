@@ -32,9 +32,6 @@
   - [[#exwm-keybindings][EXWM KEYBINDINGS]]
 
 * SETTING UP EMACS 
-
-
-
 ** ALL THE REPOS
 
 *** ELPACA
@@ -652,6 +649,7 @@ If you are having trouble of loading the themes please add those line in your ea
 (setq display-time-format "%H:%M") ;; Time Formate 
 (start-process "nm-applet" nil "nm-applet") ;; Starting Wireless conncetion 
 (start-process "nitrogen" nil "nitrogen" "--restore")
+(start-process "flameshot" nil "flameshot")
 #+end_src
 
 ** IDE
@@ -929,13 +927,12 @@ one, an error is signaled."
 #+begin_src emacs-lisp
 (defun my/apply-font-settings (frame)
   (with-selected-frame frame
-    (set-face-attribute 'default nil :font "JetBrains Mono" :height 160  :weight 'medium)
+    (set-face-attribute 'default nil :font "JetBrains Mono" :height 160  :weight 'medium)))
     ;; (set-face-attribute 'variable-pitch nil :font "Ubuntu" :height 100 :weight 'medium)
     ;; (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height 100 :weight 'medium)
     ;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
     ;; (set-face-attribute 'font-lock-keyword-face nil :slant 'italic)
-    ;; (setq-default line-spacing 0.12)
-    ))
+    ;; (setq-default line-spacing 0.12)))
 (add-hook 'after-make-frame-functions #'my/apply-font-settings)
 #+end_src
 
@@ -1120,7 +1117,7 @@ one, an error is signaled."
   (define-key exwm-mode-map (kbd "M-e") #'my/launch-thunar))
   (define-key exwm-mode-map (kbd "M-N") #'my/launch-nitrogen)
  
- 
+;; KITTY TOGGLE 
 (defvar my/kitty-process-name "kitty")
 (defun my/kill-kitty ()
   "Kill all kitty windows."
@@ -1153,6 +1150,32 @@ one, an error is signaled."
 
 (global-set-key (kbd "M-t") #'my/toggle-kitty)
 (define-key exwm-mode-map (kbd "M-t") #'my/toggle-kitty)
+
+;; FULLSCREEN TOGGLE
+(defvar my/fullscreen-p nil
+  "Toggle fullscreen mode.")
+
+(defun my/toggle-fullscreen ()
+  (interactive)
+  (if (not my/fullscreen-p)
+      (progn
+        ;; Emacs frame fullscreen
+        (set-frame-parameter nil 'fullscreen 'fullboth)
+        ;; EXWM window fullscreen (works for tiling too)
+        (when (eq major-mode 'exwm-mode)
+          (exwm-layout-set-fullscreen t))
+        (setq my/fullscreen-p t))
+    (progn
+      ;; Emacs frame normal
+      (set-frame-parameter nil 'fullscreen nil)
+      ;; EXWM window un-fullscreen
+      (when (eq major-mode 'exwm-mode)
+        (exwm-layout-unset-fullscreen))
+      (setq my/fullscreen-p nil))))
+
+(global-set-key (kbd "M-m x") #'my/toggle-fullscreen)
+(define-key exwm-mode-map (kbd "M-m x") #'my/toggle-fullscreen)
+
 
 #+end_src
 
@@ -1236,5 +1259,5 @@ one, an error is signaled."
 (define-key exwm-mode-map (kbd "M-m l") #'Lock-screen)
 (define-key exwm-mode-map (kbd "M-m b") #'Update-lockscreen-bg)
 (define-key exwm-mode-map (kbd "M-m p") #'Update-sddm-wallpaper)
-
+(define-key exwm-mode-map (kbd "M-m x") 'exwm-layout-toggle-fullscreen)
 #+end_src
