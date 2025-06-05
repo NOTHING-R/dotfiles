@@ -7,7 +7,7 @@ WALLPAPER=$(grep '^file=' ~/.config/nitrogen/bg-saved.cfg | cut -d= -f2)
 # EXTENSION="${WALLPAPER##*.}"
 
 # Step 3: Define target path
-TARGET="/usr/share/sddm/themes/nothing_sddm_theme/backgrounds/default"
+TARGET="/usr/share/sddm/themes/tiger/default"
 
 # Step 4: Copy wallpaper as default
 echo "Copying $WALLPAPER to $TARGET"
