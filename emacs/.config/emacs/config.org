@@ -1118,39 +1118,34 @@ one, an error is signaled."
   (define-key exwm-mode-map (kbd "M-e") #'my/launch-thunar))
   (define-key exwm-mode-map (kbd "M-N") #'my/launch-nitrogen)
  
-;; KITTY TOGGLE 
-(defvar my/kitty-process-name "kitty")
-(defun my/kill-kitty ()
+;; ALACRITTY TOGGLE 
+(defvar my/alacritty-process-name "alacritty")
+(defun my/kill-alacritty ()
   "Kill all kitty windows."
   (interactive)
   (dolist (buffer (buffer-list))
     (with-current-buffer buffer
       (when (and (eq major-mode 'exwm-mode)
-                 (string-match "kitty" (or exwm-class-name "")))
+                 (string-match "alacritty" (or exwm-class-name "")))
         (kill-buffer buffer)))))
 
-(defun my/toggle-kitty ()
-  "Toggle kitty terminal: launch if not visible, close if focused."
+(defun my/toggle-alacritty ()
+  "Toggle alacritty terminal: launch if not visible, close if focused."
   (interactive)
-  (let ((kitty-buffer
+  (let ((alacritty-buffer
          (seq-find (lambda (buf)
                      (with-current-buffer buf
                        (and (eq major-mode 'exwm-mode)
-                            (string-match "kitty" (or exwm-class-name "")))))
+                            (string-match "alacritty" (or exwm-class-name "")))))
                    (buffer-list))))
-    (if (and kitty-buffer (eq (current-buffer) kitty-buffer))
-        ;; We're in the kitty window, so kill it
-        (my/kill-kitty)
+    (if (and alacritty-buffer (eq (current-buffer) alacritty-buffer))
+        ;; We're in the alacritty window, so kill it
+        (my/kill-alacritty)
       ;; Else, launch it
-      (start-process-shell-command my/kitty-process-name nil "kitty"))))
+      (start-process-shell-command my/alacritty-process-name nil "alacritty"))))
 
-
-;; (global-set-key (kbd "M-t") #'my/launch-terminal)
-;; (define-key exwm-mode-map (kbd "M-t") #'my/launch-terminal)
-
-
-(global-set-key (kbd "M-t") #'my/toggle-kitty)
-(define-key exwm-mode-map (kbd "M-t") #'my/toggle-kitty)
+(global-set-key (kbd "M-t") #'my/toggle-alacritty)
+(define-key exwm-mode-map (kbd "M-t") #'my/toggle-alacritty)
 
 ;; FULLSCREEN TOGGLE
 (defvar my/fullscreen-p nil
