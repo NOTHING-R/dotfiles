@@ -6,6 +6,7 @@
   - [[#doom-modelime-and-doom-theme][DOOM MODELIME AND DOOM THEME]]
   - [[#fonts][FONTS]]
   - [[#org-mode][ORG MODE]]
+  - [[#markdown-converter-for-zola][MARKDOWN CONVERTER FOR ZOLA]]
   - [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
   - [[#minibuffer-escape][MINIBUFFER ESCAPE]]
   - [[#evil-mode][EVIL MODE]]
@@ -17,6 +18,7 @@
   - [[#which-key][WHICH KEY]]
   - [[#blank-buffer][BLANK BUFFER]]
   - [[#transperency][TRANSPERENCY]]
+  - [[#transperency-for-exwm-workspace][TRANSPERENCY FOR EXWM WORKSPACE]]
   - [[#mouse-battery-and-background-setup][MOUSE, BATTERY AND BACKGROUND SETUP]]
   - [[#ide][IDE]]
   - [[#language-support-for-ide][LANGUAGE SUPPORT FOR IDE]]
@@ -33,7 +35,6 @@
 
 * SETTING UP EMACS 
 ** ALL THE REPOS
-
 *** ELPACA
 #+begin_src emacs-lisp
 (defvar elpaca-installer-version 0.11)
@@ -79,7 +80,6 @@
 (elpaca elpaca-use-package
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
-
 #+end_src
 
 *** SOME REPO
@@ -94,11 +94,6 @@
 
 ** DOOM MODELIME AND DOOM THEME
 #+begin_src emacs-lisp
-;;======= DOOM MODE LINE =======
-;; (package-install 'doom-modeline)
-;; (require 'doom-modeline)
-;; (doom-modeline-mode 1)
-
 (use-package doom-modeline
   :ensure t
   :config
@@ -122,10 +117,8 @@
 (load-theme 'doom-one t))
 #+end_src
 
-
-
 ** FONTS 
-If you are having trouble of loading the themes please add those line in your early-init.el file
+If you are having trouble of loading the fonts please add those line in your early-init.el file
 #+begin_example
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
 #+end_example
@@ -142,12 +135,6 @@ If you are having trouble of loading the themes please add those line in your ea
 ** ORG MODE
 *** ORG MAIN
 #+begin_src emacs-lisp
-;; (use-package org 
-;;   :ensure t
-;;   :config
-;;  (setq org-columns-ellipses " $"
-;;       org-hide-emphasis-markers t))
-
 (use-package toc-org
   :ensure t
   :commands toc-org-enable
@@ -159,6 +146,49 @@ If you are having trouble of loading the themes please add those line in your ea
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 (require 'org-tempo)
+#+end_src
+
+** MARKDOWN CONVERTER FOR ZOLA
+
+*** ORG FILE TO MARKDWON
+#+begin_src emacs-lisp
+(defun my/org-md-export-to-markdown-with-header ()
+  "Export current Org file to markdown with a custom TOML-style header at the top."
+  (interactive)
+  (let* ((org-md-headline-style 'atx)
+         (org-export-with-toc nil)
+         (org-export-with-section-numbers nil)
+         (org-export-with-smart-quotes t)
+         (org-export-with-drawers nil)
+         (org-export-with-priority nil)
+         (outfile (org-md-export-to-markdown)))
+    (with-current-buffer (find-file-noselect outfile)
+      (goto-char (point-min))
+      (insert "+++\n")
+      (insert "title = \"" (file-name-base outfile) "\"\n")
+      (insert "date = \"" (format-time-string "%Y-%m-%d") "\"\n")
+      (insert "author = \"" user-full-name "\"\n")
+      (insert "+++\n\n")
+      (save-buffer))))
+#+end_src
+
+*** ORG TEMPO SHORTCUT FOR LAODING YOUTUBE VIDEO AND NORMAL VIDEO
+#+begin_src emacs-lisp
+;;>>>>>>youtube template<<<<<<<<
+(add-to-list 'org-structure-template-alist
+             '("y" . "EXPORT html\n<iframe width=\"560\" height=\"315\"\n  src=\"https://www.youtube.com/embed/\"\n  title=\"YouTube video player\"\n  frameborder=\"0\"\n  allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"\n  allowfullscreen>\n</iframe>"))
+
+;;>>>>>>video template<<<<<<<<
+(add-to-list 'org-structure-template-alist
+             '("z" . "EXPORT html\n<video controls width=\"100%\">\n  <source src=\"/videos/.mp4\" type=\"video/mp4\">\n  Your browser does not support the video tag.\n</video>"))
+
+;;>>>>>>Image template<<<<<<<<
+(tempo-define-template
+ "j"
+ '("#+CAPTION: IMAGE"
+   "[[]]")
+ "<j"
+ "Insert image caption and link placeholder in Org-mode")
 #+end_src
 
 *** ORG MODE GRAphical TWeaks
@@ -462,8 +492,9 @@ If you are having trouble of loading the themes please add those line in your ea
   ;; projectile-command-map already has a ton of bindings 
   ;; set for us, so no need to specify each individually.
   (dt/leader-keys
-    "p" '(projectile-command-map :wk "Projectile"))
-
+    "p" '(:ignore t :wk "Programing")
+    "p c" '(compile :wk "Compile")
+    "p f" '(flutter-run-or-hot-reload :wk "Flutter App Run"))
   (dt/leader-keys
     "s" '(:ignore t :wk "Search")
     "s d" '(dictionary-search :wk "Search dictionary")
@@ -561,7 +592,8 @@ If you are having trouble of loading the themes please add those line in your ea
 (define-key global-map (kbd "M-d") nil)
 
 ;; Dired keybindings under M-d
-(define-key global-map (kbd "M-d D") 'dired) ;; Open Dired
+;; (define-key global-map (kbd "M-d D") 'dired) ;; Open Dired
+(define-key global-map (kbd "M-d D") 'counsel-linux-app) ;; Open Dired
 (define-key global-map (kbd "M-d d") 'app-launcher-run-app) 
 (define-key global-map (kbd "M-d j") 'dired-jump) ;; Jump to current directory in Dired
 (define-key global-map (kbd "M-d n") 'neotree-dir) ;; Open directory in Neotree
@@ -571,11 +603,10 @@ If you are having trouble of loading the themes please add those line in your ea
 
 (define-key global-map (kbd "M-m") nil)
 
-(define-key global-map (kbd "M-m m") #'Power-menu)
+(define-key global-map (kbd "M-m m") #'ORG-TO-MD-CONVERT)
 (define-key global-map (kbd "M-m l") #'Lock-screen)
 (define-key global-map (kbd "M-m L") #'Update-lockscreen-bg)
 (define-key global-map (kbd "M-m s") #'Update-sddm-wallpaper)
-
 #+end_src
 
 ** WHICH KEY
@@ -601,60 +632,98 @@ If you are having trouble of loading the themes please add those line in your ea
 
 ** BLANK BUFFER
 #+begin_src emacs-lisp
+;; create a completely blank buffer
 (defun my/blank-buffer ()
-  "Create a new completely blank buffer with no UI elements."
+  "create a new completely blank buffer with no ui elements."
   (interactive)
-  (let ((buf (generate-new-buffer "*blank*")))
+  (let ((buf (get-buffer-create "*blank*"))) ;; get or create (prevent duplicate)
     (switch-to-buffer buf)
     (fundamental-mode)
-    ;; Make it truly blank and distraction-free (buffer-local settings)
     (setq-local mode-line-format nil)
     (setq-local header-line-format nil)
-    (setq-local cursor-type -1)
+    (setq-local cursor-type nil) ;; use nil instead of -1
     (setq-local display-line-numbers-mode -1)
     (buffer-disable-undo)
     (read-only-mode -1)
     (blink-cursor-mode 0)
-    ;; Hide fringes locally (by resizing to zero)
+    ;; Hide fringes
     (set-window-fringes (get-buffer-window buf) 0 0)
-    ;; Clear message area (minibuffer)
+    ;; Clear message area
     (message nil)))
-(add-hook 'emacs-startup-hook #'my/blank-buffer)
 #+end_src
 
 ** TRANSPERENCY
 #+begin_src emacs-lisp
+;; START picom for transparency
 (start-process "picom" nil "picom")
+
+;;; TRANSPARENCY LOGIC BASED ON BUFFER NAME
 (defun my/update-transparency-based-on-buffer ()
-  "Set transparency to 0 if in *scratch*, else back to default."
+  "Set transparency to 0 if in *blank*, else back to default."
   (if (string= (buffer-name) "*blank*")
-      ;; scratch buffer: fully transparent
+      ;; If it's blank buffer: fully transparent
       (progn
         (set-frame-parameter (selected-frame) 'alpha-background 0)
         (set-frame-parameter (selected-frame) 'alpha '(0 . 0)))
-    ;; all other buffers: normal transparency
+    ;; For all other buffers: semi-transparent
     (progn
       (set-frame-parameter (selected-frame) 'alpha-background 90)
       (set-frame-parameter (selected-frame) 'alpha '(90 . 90)))))
-;; Hook to check every time buffer changes
+
+;; Update transparency whenever buffer changes
 (add-hook 'buffer-list-update-hook #'my/update-transparency-based-on-buffer)
 #+end_src
-** MOUSE, BATTERY AND BACKGROUND SETUP
 
+** TRANSPERENCY FOR EXWM WORKSPACE
+#+begin_src emacs-lisp
+;;; ONLY OPEN *blank* ON STARTUP IF EXWM WORKSPACE 0
+(defun my/blank-buffer-in-first-workspace-only ()
+  "Open blank buffer only in EXWM workspace 0."
+  (when (and (featurep 'exwm)
+             (eq exwm-workspace-current-index 0)
+             (not (get-buffer "*blank*"))) ;; only if it doesn't exist yet
+    (my/blank-buffer)))
+
+(add-hook 'emacs-startup-hook #'my/blank-buffer-in-first-workspace-only)
+
+
+;;; WHEN SWITCHING EXWM WORKSPACES, SHOW *blank* IF NOTHING ELSE
+(defun my/show-blank-if-no-buffer ()
+  "Show *blank* buffer if current buffer is *scratch* or unnamed."
+  (let ((curr (buffer-name)))
+    (when (or (string= curr "*scratch*")
+              (string= curr "")
+              (string-match-p "^\\*.*\\*$" curr)) ;; if it's just *Messages*, *Help*, etc.
+      (unless (get-buffer "*blank*")
+        (my/blank-buffer))
+      (switch-to-buffer "*blank*"))))
+
+(add-hook 'exwm-workspace-switch-hook #'my/show-blank-if-no-buffer)
+#+end_src
+
+** MOUSE, BATTERY AND BACKGROUND SETUP
 #+begin_src emacs-lisp
 (setq mouse-autoselect-window t
       focus-follows-mouse t)
-(display-battery-mode 1) ;;Show the battery
-;; (setq display-time-day-and-date t)
-(display-time-mode 1) ;; Show Time
-(setq display-time-format "%H:%M") ;; Time Formate 
-(start-process "nm-applet" nil "nm-applet") ;; Starting Wireless conncetion 
-(start-process "nitrogen" nil "nitrogen" "--restore")
-(start-process "flameshot" nil "flameshot")
+
+(display-time-mode 1)
+(setq display-time-format "%H:%M:%S")
+
+(add-hook 'exwm-init-hook
+          (lambda ()
+            (run-at-time "1 sec" nil (lambda ()
+              (start-process "nitrogen" nil "nitrogen" "--restore")))
+            (run-at-time "3 sec" nil (lambda ()
+              (start-process "nm-applet" nil "nm-applet")))
+            (run-at-time "3 sec" nil (lambda ()
+              (start-process "flameshot" nil "flameshot")))))
 #+end_src
 
 ** IDE
 #+begin_src emacs-lisp
+;; ========== Neotree Mode ==========
+(use-package neotree
+  :ensure t)
 ;; ========== Company Mode ==========
 (use-package company
   :ensure t
@@ -681,6 +750,7 @@ If you are having trouble of loading the themes please add those line in your ea
   :ensure t
   :commands lsp
   :hook ((python-mode . lsp)
+	 (dart-mode . lsp)
          (c-mode . lsp)
          (c++-mode . lsp)
          (js-mode . lsp)
@@ -707,6 +777,32 @@ If you are having trouble of loading the themes please add those line in your ea
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp))))
+#+end_src
+
+*** DART MODE
+#+begin_src emacs-lisp
+;; Dart + Flutter setup
+(use-package dart-mode
+  :ensure t
+  :hook (dart-mode . lsp)
+  :custom
+  (dart-format-on-save t))
+
+(use-package lsp-dart
+  :ensure t
+  :after dart-mode
+  :hook (dart-mode . lsp)
+  :custom
+  (lsp-dart-flutter-widget-guides t)
+  (lsp-dart-sdk-dir "/home/aresr/flutter/bin/cache/dart-sdk/")
+  (lsp-dart-flutter-sdk-dir "/home/aresr/flutter/"))
+(use-package flutter
+  :ensure t
+  :after dart-mode
+  :custom
+  (flutter-sdk-path "/home/aresr/flutter") ;; change this to your flutter path
+  :bind (:map dart-mode-map
+              ("C-M-x" . flutter-run-or-hot-reload)))
 #+end_src
 
 ** DASHBOARD
@@ -758,16 +854,12 @@ If you are having trouble of loading the themes please add those line in your ea
 )
 
 (setq dired-listing-switches "-lha")
-;;(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-
-;;(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 #+end_src
 
 ** BACKUPS
 #+begin_src emacs-lisp
 (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files")))
 #+end_src
-
 
 ** BUFFER MOVE
 #+begin_src emacs-lisp
@@ -870,7 +962,11 @@ one, an error is signaled."
                         (interactive)
                         (exwm-workspace-switch-create ,i))))
                   (number-sequence 0 9))))
+
+
+;; For copy like normal keybinding C-c
 (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
 ;; Enable EXWM
 (exwm-enable)
 ()
@@ -937,14 +1033,13 @@ one, an error is signaled."
 (add-hook 'after-make-frame-functions #'my/apply-font-settings)
 #+end_src
 
-
 *** EXWM EXTRA SETTING
-
 #+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (setq exwm-workspace-show-all-buffers t)
 (setq exwm-workspace-warp-cursor t)
-;; ;;TOUCHPAD SETTINGS
+
+;;TOUCHPAD SETTINGS 
 (start-process-shell-command "touchpad-fix" nil "~/.config/emacs/scripts/exwm-touchpad-fix.sh")
 #+end_src
 
@@ -953,13 +1048,13 @@ one, an error is signaled."
 (add-to-list 'load-path "~/.config/emacs/scripts/")
 (require 'app-launcher)
 #+end_src
+
 *** EXWM POWER-MENU
 #+begin_src emacs-lisp
 (defun my/power-menu ()
   "Launch the graphical power menu."
   (interactive)
   (start-process-shell-command "wlogout" nil "wlogout"))
-
 
 ;; ====== KEYBINDING =====
 (global-set-key (kbd "M-p") #'my/power-menu) ;; FOR EMACS
@@ -972,7 +1067,6 @@ one, an error is signaled."
   "Lock the screen using i3lock."
   (interactive)
   (start-process "betterlockscreen" nil "betterlockscreen" "--lock"))
-
 
 (defun my/update-lockscreen-background ()
   "Update betterlockscreen background using the external script and notify via dunst."
@@ -1002,7 +1096,6 @@ one, an error is signaled."
 #+end_src
 
 ** EXWEM NOTIFICATION
-
 *** STARTING DUNST
 #+begin_src emacs-lisp
 (start-process "dunst" nil "dunst") ;; Starting Wireless conncetion 
@@ -1058,6 +1151,7 @@ one, an error is signaled."
 (define-key exwm-mode-map (kbd "<XF86MonBrightnessUp>") 'brightness-increase)
 (define-key exwm-mode-map (kbd "<XF86MonBrightnessDown>") 'brightness-decrease)
 #+end_src
+
 *** SDDM BACKGROUND UPDATE
 #+begin_src emacs-lisp
 (defun my/update-sddm-wallpaper ()
@@ -1171,8 +1265,6 @@ one, an error is signaled."
 
 (global-set-key (kbd "M-m x") #'my/toggle-fullscreen)
 (define-key exwm-mode-map (kbd "M-m x") #'my/toggle-fullscreen)
-
-
 #+end_src
 
 ** CUSTOMIZED FUNCTION NAME
@@ -1189,9 +1281,11 @@ one, an error is signaled."
 ;; Update SDDM Wallpaper
 (defalias 'Update-sddm-wallpaper #'my/update-sddm-wallpaper)
 
+(defalias 'ORG-TO-MD-CONVERT #'my/org-md-export-to-markdown-with-header)
 #+end_src
 
 ** EXWM KEYBINDINGS
+*** BUFFER
 #+begin_src emacs-lisp
 ;; Unbind M-b from any previous behavior (like backward-word)
 (define-key exwm-mode-map (kbd "M-b") nil)  ;; Start defining a prefix for M-b in EXWM
@@ -1199,22 +1293,20 @@ one, an error is signaled."
 ;; EXWM controls under M-b
 (define-key exwm-mode-map (kbd "M-b r") 'exwm-reset) ;; Reset EXWM
 (define-key exwm-mode-map (kbd "M-b w") 'exwm-workspace-switch) ;; Switch workspace
-(define-key exwm-mode-map (kbd "M-b b") 'exwm-workspace-switch-to-buffer) ;; Switch EXWM buffer
+(define-key exwm-mode-map (kbd "M-b i") 'exwm-workspace-switch-to-buffer) ;; Uncomment if needed
 (define-key exwm-mode-map (kbd "M-b d") 'exwm-workspace-delete) ;; Delete workspace
 (define-key exwm-mode-map (kbd "M-b h") 'windmove-left)  ;; Move focus left
 (define-key exwm-mode-map (kbd "M-b j") 'windmove-down)  ;; Move focus down
-(define-key exwm-mode-map (kbd "M-b k") 'kill-buffer-and-window)  ;; Kill buffer + window
 (define-key exwm-mode-map (kbd "M-b l") 'windmove-right)  ;; Move focus right
+(define-key exwm-mode-map (kbd "M-b k") 'kill-buffer-and-window)  ;; Kill buffer + window
 (define-key exwm-mode-map (kbd "M-b f") 'exwm-floating-toggle-floating) ;; Toggle floating mode
 (define-key exwm-mode-map (kbd "M-b m") 'exwm-layout-toggle-mode-line) ;; Toggle mode-line visibility
 (define-key exwm-mode-map (kbd "M-b q") 'exwm-input-release-keyboard) ;; Release EXWM keyboard Release
 
-
-;; input EXWM keyboard input
-;; (define-key exwm-mode-map (kbd "M-t") nil) 
-;; (define-key exwm-mode-map (kbd "M-t d") 'counsel-linux-app)
-
-;; ;; Define M-w as a prefix key for EXWM
+#+end_src
+*** WINDOW
+#+begin_src emacs-lisp
+;; Define M-w as a prefix key for EXWM
 (define-key exwm-mode-map (kbd "M-w") nil)  ;; Start defining a prefix for M-w in EXWM
 
 ;; Window management keybindings
@@ -1237,21 +1329,28 @@ one, an error is signaled."
 (define-key exwm-mode-map (kbd "M-w K") 'buf-move-up)
 (define-key exwm-mode-map (kbd "M-w L") 'buf-move-right)
 (define-key exwm-mode-map (kbd "M-w m") 'save-buffers-kill-emacs)
+#+end_src
 
+*** DIRED AND MENU
+#+begin_src emacs-lisp
 ;; Define M-d as a prefix key in EXWM mode
 (define-key exwm-mode-map (kbd "M-d") nil)
 
 ;; Dired keybindings under M-d for exwm
-(define-key exwm-mode-map (kbd "M-d D") 'dired) ;; Open dired
+;; (define-key exwm-mode-map (kbd "M-d D") 'dired) ;; Open dired
+(define-key exwm-mode-map (kbd "M-d D") 'counsel-linux-app) ;; Open dired
 (define-key exwm-mode-map (kbd "M-d d") 'app-launcher-run-app)
 (define-key exwm-mode-map (kbd "M-d j") 'dired-jump) ;; Jump to current directory in Dired
 (define-key exwm-mode-map (kbd "M-d n") 'neotree-dir) ;; Open directory in Neotree
 (define-key exwm-mode-map (kbd "M-d p") 'peep-dired) ;; Peep Dired preview
+#+end_src
 
+*** PERSONAL KEYBINDINGS
+#+begin_src emacs-lisp
 ;; ===== personal keybinding for menus =====
 (define-key exwm-mode-map (kbd "M-m") nil)
 
-(define-key exwm-mode-map (kbd "M-m m") #'Power-menu)
+(define-key exwm-mode-map (kbd "M-m m") #'ORG-TO-MD-CONVERT)
 (define-key exwm-mode-map (kbd "M-m l") #'Lock-screen)
 (define-key exwm-mode-map (kbd "M-m b") #'Update-lockscreen-bg)
 (define-key exwm-mode-map (kbd "M-m p") #'Update-sddm-wallpaper)
