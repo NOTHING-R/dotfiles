@@ -708,8 +708,6 @@ If you are having trouble of loading the fonts please add those line in your ear
 ;;(display-time-mode 1)  ;;Show the Time
 (setq display-time-format "%H:%M:%S")
 
-(display-battery-mode 1) ;;Show the battery
-
 (add-hook 'exwm-init-hook
           (lambda ()
             (run-at-time "1 sec" nil (lambda ()
