@@ -176,7 +176,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 #+begin_src emacs-lisp
 ;;>>>>>>youtube template<<<<<<<<
 (add-to-list 'org-structure-template-alist
-             '("y" . "EXPORT html\n<iframe width=\"560\" height=\"315\"\n  src=\"https://www.youtube.com/embed/\"\n  title=\"YouTube video player\"\n  frameborder=\"0\"\n  allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"\n  allowfullscreen>\n</iframe>"))
+             '("y" . "EXPORT html\n<iframe width=\"350\" height=\"200\"\n  src=\"https://www.youtube.com/embed/\"\n  title=\"YouTube video player\"\n  frameborder=\"0\"\n  allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\"\n  allowfullscreen>\n</iframe>"))
 
 ;;>>>>>>video template<<<<<<<<
 (add-to-list 'org-structure-template-alist
@@ -326,7 +326,6 @@ If you are having trouble of loading the fonts please add those line in your ear
   (ivy-set-display-transformer 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer))
 #+end_src
-
 
 ** GENERAL KEYBINDING
 #+begin_src emacs-lisp
@@ -706,8 +705,10 @@ If you are having trouble of loading the fonts please add those line in your ear
 (setq mouse-autoselect-window t
       focus-follows-mouse t)
 
-(display-time-mode 1)
+;;(display-time-mode 1)  ;;Show the Time
 (setq display-time-format "%H:%M:%S")
+
+(display-battery-mode 1) ;;Show the battery
 
 (add-hook 'exwm-init-hook
           (lambda ()
