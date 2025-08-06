@@ -148,6 +148,21 @@ If you are having trouble of loading the fonts please add those line in your ear
 (require 'org-tempo)
 #+end_src
 
+*** TEST FOR COPY LINK
+#+begin_src emacs-lisp
+(defun my/org-copy-link-with-description ()
+  "Copy org-mode link at point as [[url][description]] format."
+  (interactive)
+  (let* ((link (org-element-context)))
+    (if (eq (org-element-type link) 'link)
+        (let* ((url (org-element-property :raw-link link))
+               (desc (org-element-property :description link))
+               (text (if (and desc (not (string= desc ""))) desc url)))
+          (kill-new (format "[[%s][%s]]" url text))
+          (message "Copied: [[%s][%s]]" url text))
+      (message "Not on a valid org link"))))
+
+#+end_src
 ** MARKDOWN CONVERTER FOR ZOLA
 
 *** ORG FILE TO MARKDWON
@@ -183,12 +198,8 @@ If you are having trouble of loading the fonts please add those line in your ear
              '("z" . "EXPORT html\n<video controls width=\"100%\">\n  <source src=\"/videos/.mp4\" type=\"video/mp4\">\n  Your browser does not support the video tag.\n</video>"))
 
 ;;>>>>>>Image template<<<<<<<<
-(tempo-define-template
- "j"
- '("#+CAPTION: IMAGE"
-   "[[]]")
- "<j"
- "Insert image caption and link placeholder in Org-mode")
+(add-to-list 'org-structure-template-alist
+             '("j" . "EXPORT html\n<img src=\"/folder/name\" alt=\"IMAGE\" width=\"300\" height=\"220\">"))
 #+end_src
 
 *** ORG MODE GRAphical TWeaks
@@ -606,6 +617,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 (define-key global-map (kbd "M-m l") #'Lock-screen)
 (define-key global-map (kbd "M-m L") #'Update-lockscreen-bg)
 (define-key global-map (kbd "M-m s") #'Update-sddm-wallpaper)
+(define-key global-map (kbd "M-m c") #'my/org-copy-link-with-description)
 #+end_src
 
 ** WHICH KEY
@@ -705,7 +717,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 (setq mouse-autoselect-window t
       focus-follows-mouse t)
 
-;;(display-time-mode 1)  ;;Show the Time
+(display-time-mode 1)  ;;Show the Time
 (setq display-time-format "%H:%M:%S")
 
 (add-hook 'exwm-init-hook
