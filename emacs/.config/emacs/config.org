@@ -717,6 +717,9 @@ If you are having trouble of loading the fonts please add those line in your ear
 (setq mouse-autoselect-window t
       focus-follows-mouse t)
 
+;; ========= IF YOU ARE USING A PC COMMENT THE LINE =========
+(display-battery-mode 1)
+
 (display-time-mode 1)  ;;Show the Time
 (setq display-time-format "%H:%M:%S")
 
