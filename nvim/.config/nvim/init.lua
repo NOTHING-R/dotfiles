@@ -12,14 +12,17 @@ end
 
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
-require('lazy').setup({
-    require 'plugins.colortheme',
-    require 'plugins.neotree',
-    require 'plugins.bufferline',
-    require 'plugins.lualine',
-    require 'plugins.treesitter',
-    require 'plugins.telescope',
-    require 'plugins.lsp',
-    require 'plugins.autocompletion',
-})
-
+require('lazy').setup {
+  require 'plugins.colortheme',
+  require 'plugins.neotree',
+  require 'plugins.bufferline',
+  require 'plugins.lualine',
+  require 'plugins.treesitter',
+  require 'plugins.telescope',
+  require 'plugins.lsp',
+  require 'plugins.autocompletion',
+  require 'plugins.autopair',
+  require 'plugins.autoformating',
+  require 'plugins.gitsigns',
+  require 'plugins.alpha',
+}

@@ -1,6 +1,5 @@
 return { -- Autocompletion
   'hrsh7th/nvim-cmp',
-  -- event = 'InsertEnter',
   dependencies = {
     -- Snippet Engine & its associated nvim-cmp source
     {
@@ -26,6 +25,9 @@ return { -- Autocompletion
 
     -- Adds a number of user-friendly snippets
     'rafamadriz/friendly-snippets',
+
+    -- Add autopairs dependency
+    'windwp/nvim-autopairs',
   },
   config = function()
     local cmp = require 'cmp'
@@ -34,31 +36,31 @@ return { -- Autocompletion
     luasnip.config.setup {}
 
     local kind_icons = {
-      Text = '󰉿',
-      Method = 'm',
-      Function = '󰊕',
-      Constructor = '',
-      Field = '',
-      Variable = '󰆧',
-      Class = '󰌗',
-      Interface = '',
-      Module = '',
-      Property = '',
-      Unit = '',
-      Value = '󰎠',
-      Enum = '',
-      Keyword = '󰌋',
-      Snippet = '',
-      Color = '󰏘',
-      File = '󰈙',
-      Reference = '',
-      Folder = '󰉋',
-      EnumMember = '',
-      Constant = '󰇽',
-      Struct = '',
-      Event = '',
-      Operator = '󰆕',
-      TypeParameter = '󰊄',
+      Text = "󰉿",
+      Method = "󰆧",
+      Function = "󰊕",
+      Constructor = "󰅩",
+      Field = "󰜢",
+      Variable = "󰀫",
+      Class = "󰠱",
+      Interface = "󰜰",
+      Module = "󰏗",
+      Property = "󰜢",
+      Unit = "󰑭",
+      Value = "󰎠",
+      Enum = "󰒻",
+      Keyword = "󰌋",
+      Snippet = "󰅴",
+      Color = "󰏘",
+      File = "󰈙",
+      Reference = "󰈇",
+      Folder = "󰉋",
+      EnumMember = "󰒻",
+      Constant = "󰏿",
+      Struct = "󰙅",
+      Event = "󰉁",
+      Operator = "󰆕",
+      TypeParameter = "󰊄",
     }
 
     cmp.setup {
@@ -68,14 +70,22 @@ return { -- Autocompletion
         end,
       },
       completion = { completeopt = 'menu,menuone,noinsert' },
-      -- window = {
-      --     completion = cmp.config.window.bordered(),
-      --     documentation = cmp.config.window.bordered(),
-      -- },
       mapping = cmp.mapping.preset.insert {
         ['<C-j>'] = cmp.mapping.select_next_item(),       -- Select the [n]ext item
         ['<C-k>'] = cmp.mapping.select_prev_item(),       -- Select the [p]revious item
-        ['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept the completion with Enter.
+        ['<CR>'] = cmp.mapping(function(fallback)
+          -- Only confirm if explicitly selected, otherwise just break line
+          if cmp.visible() and cmp.get_active_entry() then
+            -- Only confirm if user explicitly selected an item
+            if cmp.get_selected_entry() then
+              cmp.confirm({ select = false })
+            else
+              fallback()
+            end
+          else
+            fallback()
+          end
+        end, { 'i', 's' }),
         ['<C-c>'] = cmp.mapping.complete {},              -- Manually trigger a completion from nvim-cmp.
 
         -- Think of <c-l> as moving to the right of your snippet expansion.
@@ -97,10 +107,11 @@ return { -- Autocompletion
           end
         end, { 'i', 's' }),
 
-        -- Select next/previous item with Tab / Shift + Tab
+        -- Tab will select and confirm the completion
         ['<Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
+            cmp.confirm({ select = true }) -- Auto-confirm selection with Tab
           elseif luasnip.expand_or_locally_jumpable() then
             luasnip.expand_or_jump()
           else
