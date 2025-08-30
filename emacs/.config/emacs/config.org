@@ -148,21 +148,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 (require 'org-tempo)
 #+end_src
 
-*** TEST FOR COPY LINK
-#+begin_src emacs-lisp
-(defun my/org-copy-link-with-description ()
-  "Copy org-mode link at point as [[url][description]] format."
-  (interactive)
-  (let* ((link (org-element-context)))
-    (if (eq (org-element-type link) 'link)
-        (let* ((url (org-element-property :raw-link link))
-               (desc (org-element-property :description link))
-               (text (if (and desc (not (string= desc ""))) desc url)))
-          (kill-new (format "[[%s][%s]]" url text))
-          (message "Copied: [[%s][%s]]" url text))
-      (message "Not on a valid org link"))))
 
-#+end_src
 ** MARKDOWN CONVERTER FOR ZOLA
 
 *** ORG FILE TO MARKDWON
@@ -505,6 +491,11 @@ If you are having trouble of loading the fonts please add those line in your ear
     "p" '(:ignore t :wk "Programing")
     "p c" '(compile :wk "Compile")
     "p f" '(flutter-run-or-hot-reload :wk "Flutter App Run"))
+
+  (dt/leader-keys
+    "c" '(:ignore t :wk "Calendar")
+    "c c" '(calendar :wk "Calendar"))
+
   (dt/leader-keys
     "s" '(:ignore t :wk "Search")
     "s d" '(dictionary-search :wk "Search dictionary")
@@ -618,6 +609,14 @@ If you are having trouble of loading the fonts please add those line in your ear
 (define-key global-map (kbd "M-m L") #'Update-lockscreen-bg)
 (define-key global-map (kbd "M-m s") #'Update-sddm-wallpaper)
 (define-key global-map (kbd "M-m c") #'my/org-copy-link-with-description)
+
+(define-key global-map (kbd "M-p") nil)
+
+(define-key global-map (kbd "M-p c") #'compile)
+(define-key global-map (kbd "M-p f") #'flutter-run-or-hot-reload)
+(define-key global-map (kbd "M-p n") #'my/open-nvim-external)
+
+
 #+end_src
 
 ** WHICH KEY
@@ -1071,8 +1070,8 @@ one, an error is signaled."
   (start-process-shell-command "wlogout" nil "wlogout"))
 
 ;; ====== KEYBINDING =====
-(global-set-key (kbd "M-p") #'my/power-menu) ;; FOR EMACS
-(define-key exwm-mode-map [?\M-p] #'my/power-menu) ;; FOR EXWM
+(global-set-key (kbd "M-P") #'my/power-menu) ;; FOR EMACS
+(define-key exwm-mode-map [?\M-P] #'my/power-menu) ;; FOR EXWM
 #+end_src
 
 *** EXWM SCREEN LOCK
@@ -1203,6 +1202,12 @@ one, an error is signaled."
   "launch firefox browser."
   (interactive)
   (start-process-shell-command "firefox" nil "firefox"))
+
+
+(defun my/open-nvim-external ()
+  "Launch Neovim in external terminal."
+  (interactive)
+  (start-process "nvim" nil "alacritty" "-e" "nvim"))
 
  (defun my/launch-nitrogen ()
   "launch firefox browser."
@@ -1369,4 +1374,13 @@ one, an error is signaled."
 (define-key exwm-mode-map (kbd "M-m b") #'Update-lockscreen-bg)
 (define-key exwm-mode-map (kbd "M-m p") #'Update-sddm-wallpaper)
 (define-key exwm-mode-map (kbd "M-m x") 'exwm-layout-toggle-fullscreen)
+#+end_src
+
+*** PROGRAMING KEY BINDINGS
+#+begin_src emacs-lisp
+(define-key exwm-mode-map (kbd "M-p") nil)
+
+(define-key exwm-mode-map (kbd "M-p c") #'compile)
+(define-key exwm-mode-map (kbd "M-p f") #'flutter-run-or-hot-reload)
+(define-key exwm-mode-map (kbd "M-p n") #'my/open-nvim-external)
 #+end_src
