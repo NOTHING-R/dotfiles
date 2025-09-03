@@ -611,12 +611,10 @@ If you are having trouble of loading the fonts please add those line in your ear
 (define-key global-map (kbd "M-m c") #'my/org-copy-link-with-description)
 
 (define-key global-map (kbd "M-p") nil)
-
 (define-key global-map (kbd "M-p c") #'compile)
 (define-key global-map (kbd "M-p f") #'flutter-run-or-hot-reload)
 (define-key global-map (kbd "M-p n") #'my/open-nvim-external)
-
-
+(define-key global-map (kbd "M-p v") #'vterm-toggle)
 #+end_src
 
 ** WHICH KEY
@@ -765,6 +763,7 @@ If you are having trouble of loading the fonts please add those line in your ear
   :hook ((python-mode . lsp)
 	 (dart-mode . lsp)
          (c-mode . lsp)
+	 (lua-mode . lsp)
          (c++-mode . lsp)
          (js-mode . lsp)
          (typescript-mode . lsp)
@@ -790,6 +789,52 @@ If you are having trouble of loading the fonts please add those line in your ear
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp))))
+#+end_src
+
+
+*** LUA
+#+begin_src emacs-lisp
+(use-package lua-mode
+  :ensure t)
+#+end_src
+*** C/C++
+#+begin_src emacs-lisp
+;; ============================
+;; C / C++ Configuration
+;; ============================
+
+(use-package cc-mode
+  :ensure nil ;; cc-mode is built into Emacs
+  :hook ((c-mode . my/c-mode-setup)
+         (c++-mode . my/c-mode-setup)))
+
+(defun my/c-mode-setup ()
+  "Custom configuration for C / C++ development."
+  ;; Disable annoying auto-indent when pressing RET or A
+  (electric-indent-local-mode -1)
+
+  ;; Set indentation style and size
+  (c-set-style "linux")        ;; choices: "gnu", "k&r", "bsd", "stroustrup", "linux"
+  (setq c-basic-offset 4)      ;; number of spaces per indent level
+  (setq indent-tabs-mode nil)  ;; use spaces instead of tabs
+
+  ;; Optional: make TAB always indent or complete
+  (setq tab-always-indent 'complete)
+
+  ;; Keybinding: format buffer quickly
+  (local-set-key (kbd "C-c i") #'indent-region))
+
+;; ============================
+;; Optional: Clangd backend
+;; ============================
+(use-package lsp-clangd
+  :ensure nil
+  :after lsp-mode
+  :custom
+  (lsp-clients-clangd-args '("--header-insertion=never"
+                             "--completion-style=detailed"
+                             "--clang-tidy")))
+
 #+end_src
 
 *** DART MODE
