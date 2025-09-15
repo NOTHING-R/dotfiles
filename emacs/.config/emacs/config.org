@@ -12,6 +12,7 @@
   - [[#evil-mode][EVIL MODE]]
   - [[#vterm][VTERM]]
   - [[#counsel-and-ivy][COUNSEL AND IVY]]
+  - [[#helm][HELM]]
   - [[#general-keybinding][GENERAL KEYBINDING]]
   - [[#sudo-edit][SUDO EDIT]]
   - [[#emacs-keybinding][EMACS KEYBINDING]]
@@ -26,6 +27,7 @@
   - [[#dired][DIRED]]
   - [[#backups][BACKUPS]]
   - [[#buffer-move][BUFFER MOVE]]
+  - [[#emacs-full-screen-toggle][Emacs full screen toggle]]
 - [[#setting-up-exwm][SETTING UP EXWM]]
   - [[#exwm][EXWM]]
   - [[#exwem-notification][EXWEM NOTIFICATION]]
@@ -220,6 +222,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 *** DISPLAY LINE NUMBER MODE
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode 1) ;; Display line numbers
+(setq display-line-numbers-type 'relative)
 #+end_src
 
 *** FOR PAIR MODE: LIKE(){}
@@ -278,6 +281,16 @@ If you are having trouble of loading the fonts please add those line in your ear
   (define-key evil-motion-state-map (kbd "TAB") nil))
 ;; Setting RETURN key in org-mode to follow links
 (setq org-return-follows-link  t)
+
+(use-package evil-escape
+  :ensure t
+  :after evil
+  :config
+  (setq evil-escape-key-sequence "jj")
+  (setq evil-escape-delay 0.2)
+  ;; Only enable evil-escape in insert state
+  (setq evil-escape-excluded-states '(visual normal replace operator motion emacs))
+  (evil-escape-mode 1))
 #+end_src
 
 ** VTERM
@@ -322,6 +335,12 @@ If you are having trouble of loading the fonts please add those line in your ear
   :config
   (ivy-set-display-transformer 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer))
+#+end_src
+
+** HELM
+#+begin_src emacs-lisp
+(use-package helm
+  :ensure t)
 #+end_src
 
 ** GENERAL KEYBINDING
@@ -465,7 +484,7 @@ If you are having trouble of loading the fonts please add those line in your ear
     "m" '(:ignore t :wk "Org")
     "m a" '(org-agenda :wk "Org agenda")
     "m e" '(org-export-dispatch :wk "Org export dispatch")
-    "m i" '(org-toggle-item :wk "Org toggle item")
+    "m i" '(org-toggle-inline-images :wk "Org toggle item")
     "m t" '(org-todo :wk "Org todo")
     "m B" '(org-babel-tangle :wk "Org babel tangle")
     "m T" '(org-todo-list :wk "Org todo list"))
@@ -615,6 +634,9 @@ If you are having trouble of loading the fonts please add those line in your ear
 (define-key global-map (kbd "M-p f") #'flutter-run-or-hot-reload)
 (define-key global-map (kbd "M-p n") #'my/open-nvim-external)
 (define-key global-map (kbd "M-p v") #'vterm-toggle)
+
+(define-key global-map (kbd "M-f") nil)
+(define-key global-map (kbd "M-f f") #'my/toggle-fullscreen-buffer)
 #+end_src
 
 ** WHICH KEY
@@ -773,6 +795,38 @@ If you are having trouble of loading the fonts please add those line in your ear
   (lsp-pyright-typechecking-mode "basic")
   (lsp-enable-symbol-highlighting t)
   (lsp-prefer-flymake nil))
+
+
+;; (setq lsp-enable-on-type-formatting t)   ;; format as you type
+;; (setq lsp-enable-indentation t)          ;; let LSP handle indentation
+
+;; (use-package lsp-ui
+;;   :ensure t)
+
+;; ;; Yasnippet মূল সেটআপ
+;; (use-package yasnippet
+;;   :ensure t
+;;   :hook ((prog-mode . yas-minor-mode)) ;; সব prog-mode এ চালু হবে
+;;   :config
+;;   (yas-reload-all))
+
+;; ;; Optional: ready-made snippet collection
+;; (use-package yasnippet-snippets
+;;   :ensure t
+;;   :after yasnippet)
+
+;; ;; Core Tree-sitter
+
+;; (use-package tree-sitter
+;;   :ensure t
+;;   :hook ((prog-mode . tree-sitter-mode)
+;; 	 (lsp-mode . tree-sitter-hl-mode)
+;;          (prog-mode. tree-sitter-hl-mode)))
+;; ;; Pre-built grammars for many languages
+;; (use-package tree-sitter-langs
+;;   :ensure t
+;;   :after tree-sitter)
+
 #+end_src
 
 ** LANGUAGE SUPPORT FOR IDE
@@ -815,7 +869,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 
   ;; Set indentation style and size
   (c-set-style "linux")        ;; choices: "gnu", "k&r", "bsd", "stroustrup", "linux"
-  (setq c-basic-offset 4)      ;; number of spaces per indent level
+  (setq c-basic-offset 2)      ;; number of spaces per indent level
   (setq indent-tabs-mode nil)  ;; use spaces instead of tabs
 
   ;; Optional: make TAB always indent or complete
@@ -823,6 +877,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 
   ;; Keybinding: format buffer quickly
   (local-set-key (kbd "C-c i") #'indent-region))
+
 
 ;; ============================
 ;; Optional: Clangd backend
@@ -991,6 +1046,83 @@ one, an error is signaled."
       (select-window other-win))))
 #+end_src
 
+** Emacs full screen toggle
+#+begin_src emacs-lisp
+;; (defvar my/toggle-maximized-window nil
+;;   "Track whether the current window is maximized.")
+;; (defvar my/saved-window-config nil
+;;   "Store the window configuration before maximizing.")
+
+;; (defun my/toggle-fullscreen-buffer ()
+;;   "Toggle the current buffer between full-screen and the previous window configuration."
+;;   (interactive)
+;;   (if my/toggle-maximized-window
+;;       ;; Restore previous window configuration
+;;       (progn
+;;         (when my/saved-window-config
+;;           (set-window-configuration my/saved-window-config))
+;;         (setq my/toggle-maximized-window nil))
+;;     ;; Maximize current window
+;;     (progn
+;;       (setq my/saved-window-config (current-window-configuration))
+;;       (delete-other-windows)
+;;       (setq my/toggle-maximized-window t))))
+
+;; ;; Bind to M-f (Alt-f)
+;; (global-set-key (kbd "M-f") 'my/toggle-fullscreen-buffer)
+
+
+;; (require 'exwm)  ; Ensure EXWM is loaded; add this if not already present
+
+(defvar my/toggle-maximized-window nil
+  "Track whether the current window is maximized.")
+
+(defvar my/saved-window-config nil
+  "Store the window configuration before maximizing.")
+
+(defvar my/saved-frame-params nil
+  "Store the frame parameters before maximizing in EXWM.")
+
+(defun my/toggle-fullscreen-buffer ()
+  "Toggle the current buffer/window between full-screen and previous state.
+For EXWM X clients (e.g., Firefox, Thunar), maximizes the frame to full-screen.
+For regular Emacs buffers, maximizes the window within the frame."
+  (interactive)
+  (if (and (boundp 'exwm-mode) exwm-mode)  ; Check if in an EXWM-managed buffer
+      ;; EXWM X window handling: Toggle frame full-screen
+      (if my/toggle-maximized-window
+          ;; Restore previous frame state
+          (progn
+            (when my/saved-frame-params
+              (modify-frame-parameters nil my/saved-frame-params))
+            (setq my/toggle-maximized-window nil)
+            (setq my/saved-frame-params nil))
+        ;; Maximize frame to full-screen
+        (progn
+          (setq my/saved-frame-params (frame-parameters))
+          ;; Full-screen parameters: fill screen, no decorations, top-left at 0,0
+          (modify-frame-parameters nil
+                                   '((fullscreen . fullboth)
+                                     (top . 0)
+                                     (left . 0)
+                                     (minibuffer . t)
+                                     (menu-bar-lines . 0)
+                                     (tool-bar-lines . 0)))
+          (setq my/toggle-maximized-window t)))
+    ;; Fallback for regular Emacs buffers: Original logic
+    (if my/toggle-maximized-window
+        ;; Restore previous window configuration
+        (progn
+          (when my/saved-window-config
+            (set-window-configuration my/saved-window-config))
+          (setq my/toggle-maximized-window nil))
+      ;; Maximize current window
+      (progn
+        (setq my/saved-window-config (current-window-configuration))
+        (delete-other-windows)
+        (setq my/toggle-maximized-window t)))))
+#+end_src
+
 
 * SETTING UP EXWM
 ** EXWM 
@@ -1010,6 +1142,7 @@ one, an error is signaled."
       `(([?\M-r] . exwm-reset) ;; s-r: Reset (to line-mode).
         ([?\M-n] . exwm-workspace-switch) ;; s-w: Switch workspace.
 	([?\M-k] . kill-buffer-and-window)
+	([?\M-g] . exwm-layout-toggle-fullscreen)
         ([?\M-&] . (lambda (cmd) ;; s-&: Launch application.
                      (interactive (list (read-shell-command "$ ")))
                      (start-process-shell-command cmd nil cmd)))
@@ -1418,7 +1551,6 @@ one, an error is signaled."
 (define-key exwm-mode-map (kbd "M-m l") #'Lock-screen)
 (define-key exwm-mode-map (kbd "M-m b") #'Update-lockscreen-bg)
 (define-key exwm-mode-map (kbd "M-m p") #'Update-sddm-wallpaper)
-(define-key exwm-mode-map (kbd "M-m x") 'exwm-layout-toggle-fullscreen)
 #+end_src
 
 *** PROGRAMING KEY BINDINGS
@@ -1428,4 +1560,11 @@ one, an error is signaled."
 (define-key exwm-mode-map (kbd "M-p c") #'compile)
 (define-key exwm-mode-map (kbd "M-p f") #'flutter-run-or-hot-reload)
 (define-key exwm-mode-map (kbd "M-p n") #'my/open-nvim-external)
+#+end_src
+
+*** TOGGLE FULL SCREEN
+#+begin_src emacs-lisp
+(define-key exwm-mode-map (kbd "M-f") nil)
+(define-key exwm-mode-map (kbd "M-f f") #'my/toggle-fullscreen-buffer)
+(define-key exwm-mode-map (kbd "M-f F") 'find-file)
 #+end_src
