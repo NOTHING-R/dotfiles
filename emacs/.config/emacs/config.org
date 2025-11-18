@@ -1,5 +1,4 @@
 #+AUTHOR: NOTHING
-
 * TABLE OF CONTNT'S :toc:
 - [[#setting-up-emacs][SETTING UP EMACS]]
   - [[#all-the-repos][ALL THE REPOS]]
@@ -114,9 +113,9 @@
 (use-package doom-themes
   :ensure t
   :config
-(setq doom-themes-enable-bold t
-      doom-themes-enable-italic t)
-(load-theme 'doom-one t))
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t)
+  (load-theme 'doom-one t))
 #+end_src
 
 ** FONTS 
@@ -232,8 +231,9 @@ If you are having trouble of loading the fonts please add those line in your ear
 ;; Otherwise, org-tempo is broken when you try to <s TAB...
 (add-hook 'org-mode-hook (lambda ()
 			   (setq-local electric-pair-inhibit-predicate
-                       `(lambda (c)
-                      (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+				       `(lambda (c)
+					  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+
 #+end_src
 
 *** ZOOMING IN AND OUT
@@ -330,8 +330,8 @@ If you are having trouble of loading the fonts please add those line in your ear
   :init (ivy-rich-mode 1) ;; this gets us descriptions in M-x.
   :custom
   (ivy-virtual-abbreviate 'full
-   ivy-rich-switch-buffer-align-virtual-buffer t
-   ivy-rich-path-style 'abbrev)
+			  ivy-rich-switch-buffer-align-virtual-buffer t
+			  ivy-rich-path-style 'abbrev)
   :config
   (ivy-set-display-transformer 'ivy-switch-buffer
                                'ivy-rich-switch-buffer-transformer))
@@ -348,7 +348,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 (use-package general
   :ensure t
   :config
- 
+  
   ;; Define 'SPC' as the global leader key
   (general-create-definer dt/leader-keys
     :states '(normal insert visual emacs)
@@ -421,7 +421,7 @@ If you are having trouble of loading the fonts please add those line in your ear
     "f r" '(counsel-recentf :wk "Find recent files")
     "f u" '(sudo-edit-find-file :wk "Sudo find file")
     "f U" '(sudo-edit :wk "Sudo edit file"))
-  
+
   (dt/leader-keys
     "g" '(:ignore t :wk "Git")    
     "g /" '(magit-displatch :wk "Magit dispatch")
@@ -474,7 +474,7 @@ If you are having trouble of loading the fonts please add those line in your ear
     "h r r" '((lambda () (interactive)
 		(load-file "~/.config/emacs/init.el")
 		(ignore (elpaca-process-queues)))
-              :wk "Reload emacs config")
+	      :wk "Reload emacs config")
     "h t" '(load-theme :wk "Load theme")
     "h v" '(describe-variable :wk "Describe variable")
     "h w" '(where-is :wk "Prints keybinding for command if set")
@@ -509,7 +509,8 @@ If you are having trouble of loading the fonts please add those line in your ear
   (dt/leader-keys
     "p" '(:ignore t :wk "Programing")
     "p c" '(compile :wk "Compile")
-    "p f" '(flutter-run-or-hot-reload :wk "Flutter App Run"))
+    "p i" '(indent-region :wk "Indent File") 
+    "p f" '(flutter-run-or-hot-reload :wk "flutter app run"))
 
   (dt/leader-keys
     "c" '(:ignore t :wk "Calendar")
@@ -560,9 +561,9 @@ If you are having trouble of loading the fonts please add those line in your ear
 (use-package sudo-edit
   :ensure t
   :config
-    (dt/leader-keys
-      "fu" '(sudo-edit-find-file :wk "Sudo find file")
-      "fU" '(sudo-edit :wk "Sudo edit file")))
+  (dt/leader-keys
+    "fu" '(sudo-edit-find-file :wk "Sudo find file")
+    "fU" '(sudo-edit :wk "Sudo edit file")))
 #+end_src
 
 ** EMACS KEYBINDING
@@ -634,19 +635,26 @@ If you are having trouble of loading the fonts please add those line in your ear
 (define-key global-map (kbd "M-p f") #'flutter-run-or-hot-reload)
 (define-key global-map (kbd "M-p n") #'my/open-nvim-external)
 (define-key global-map (kbd "M-p v") #'vterm-toggle)
+(define-key global-map (kbd "M-p i") #'indent-region)
+(define-key global-map (kbd "M-p t") #'tab-bar-mode)
 
 (define-key global-map (kbd "M-f") nil)
 (define-key global-map (kbd "M-f f") #'my/toggle-fullscreen-buffer)
+
+;; Move between tabs with Alt + Left/Right arrows
+(global-set-key (kbd "M-<left>") #'tab-previous)
+(global-set-key (kbd "M-<right>") #'tab-next)
+
 #+end_src
 
 ** WHICH KEY
 #+begin_src emacs-lisp
 (use-package which-key
-:ensure t
-:init
+  :ensure t
+  :init
   (which-key-mode 1)
-:config
-(setq which-key-side-window-location 'bottom
+  :config
+  (setq which-key-side-window-location 'bottom
         which-key-sort-order #'which-key-key-order-alpha
         which-key-sort-uppercase-first nil
         which-key-add-column-padding 1
@@ -697,8 +705,8 @@ If you are having trouble of loading the fonts please add those line in your ear
         (set-frame-parameter (selected-frame) 'alpha '(0 . 0)))
     ;; For all other buffers: semi-transparent
     (progn
-      (set-frame-parameter (selected-frame) 'alpha-background 90)
-      (set-frame-parameter (selected-frame) 'alpha '(90 . 90)))))
+      (set-frame-parameter (selected-frame) 'alpha-background 97)
+      (set-frame-parameter (selected-frame) 'alpha '(97 . 97)))))
 
 ;; Update transparency whenever buffer changes
 (add-hook 'buffer-list-update-hook #'my/update-transparency-based-on-buffer)
@@ -739,18 +747,24 @@ If you are having trouble of loading the fonts please add those line in your ear
 ;; ========= IF YOU ARE USING A PC COMMENT THE LINE =========
 (display-battery-mode 1)
 
-(display-time-mode 1)  ;;Show the Time
-(setq display-time-format "%H:%M:%S")
+(display-time-mode 1)  ;; Enable time display in the modeline
+(setq display-time-format "%H:%M:%S")  ;; Set format to include hours, minutes, and seconds
+;; (setq display-time-interval 1)  ;; Update the time every 1 second
+
 
 (add-hook 'exwm-init-hook
           (lambda ()
             (run-at-time "1 sec" nil (lambda ()
-              (start-process "nitrogen" nil "nitrogen" "--restore")))
+				       (start-process "nitrogen" nil "nitrogen" "--restore")))
             (run-at-time "3 sec" nil (lambda ()
-              (start-process "nm-applet" nil "nm-applet")))
+				       (start-process "nm-applet" nil "nm-applet")))
             (run-at-time "3 sec" nil (lambda ()
-              (start-process "flameshot" nil "flameshot")))))
+				       (start-process "flameshot" nil "flameshot")))
+
+            (run-at-time "3 sec" nil (lambda ()
+				       (setq display-time-interval 1)))))  ;; Update the time every 1 second
 #+end_src
+
 
 ** IDE
 #+begin_src emacs-lisp
@@ -788,6 +802,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 	 (lua-mode . lsp)
          (c++-mode . lsp)
          (js-mode . lsp)
+	 (html-mode . lsp)
          (typescript-mode . lsp)
          (go-mode . lsp)
          (rust-mode . lsp))
@@ -800,32 +815,32 @@ If you are having trouble of loading the fonts please add those line in your ear
 ;; (setq lsp-enable-on-type-formatting t)   ;; format as you type
 ;; (setq lsp-enable-indentation t)          ;; let LSP handle indentation
 
-;; (use-package lsp-ui
-;;   :ensure t)
+(use-package lsp-ui
+  :ensure t)
 
-;; ;; Yasnippet মূল সেটআপ
-;; (use-package yasnippet
-;;   :ensure t
-;;   :hook ((prog-mode . yas-minor-mode)) ;; সব prog-mode এ চালু হবে
-;;   :config
-;;   (yas-reload-all))
+;; Yasnippet মূল সেটআপ
+(use-package yasnippet
+  :ensure t
+  :hook ((prog-mode . yas-minor-mode)) ;; সব prog-mode এ চালু হবে
+  :config
+  (yas-reload-all))
 
-;; ;; Optional: ready-made snippet collection
-;; (use-package yasnippet-snippets
-;;   :ensure t
-;;   :after yasnippet)
+;; Optional: ready-made snippet collection
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
 
-;; ;; Core Tree-sitter
+;; Core Tree-sitter
 
-;; (use-package tree-sitter
-;;   :ensure t
-;;   :hook ((prog-mode . tree-sitter-mode)
-;; 	 (lsp-mode . tree-sitter-hl-mode)
-;;          (prog-mode. tree-sitter-hl-mode)))
-;; ;; Pre-built grammars for many languages
-;; (use-package tree-sitter-langs
-;;   :ensure t
-;;   :after tree-sitter)
+(use-package tree-sitter
+  :ensure t
+  :hook ((prog-mode . tree-sitter-mode)
+	 (lsp-mode . tree-sitter-hl-mode)
+         (prog-mode. tree-sitter-hl-mode)))
+;; Pre-built grammars for many languages
+(use-package tree-sitter-langs
+  :ensure t
+  :after tree-sitter)
 
 #+end_src
 
@@ -843,8 +858,8 @@ If you are having trouble of loading the fonts please add those line in your ear
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp))))
-#+end_src
 
+#+end_src
 
 *** LUA
 #+begin_src emacs-lisp
@@ -861,6 +876,11 @@ If you are having trouble of loading the fonts please add those line in your ear
   :ensure nil ;; cc-mode is built into Emacs
   :hook ((c-mode . my/c-mode-setup)
          (c++-mode . my/c-mode-setup)))
+
+(add-hook 'c-mode-hook
+          (lambda ()
+            (setq comment-start "// "
+                  comment-end "")))
 
 (defun my/c-mode-setup ()
   "Custom configuration for C / C++ development."
@@ -939,7 +959,7 @@ If you are having trouble of loading the fonts please add those line in your ear
 ;; (dashboard-modify-heading-icons '((recents . "file-text")
 ;;                                   (bookmarks . "book")))
 ;; :config
-;; (dashboard-setup-startup-hook))
+;; (dashboard-setup-startup-hook)
 #+end_src
 
 ** DIRED
@@ -1560,6 +1580,7 @@ For regular Emacs buffers, maximizes the window within the frame."
 (define-key exwm-mode-map (kbd "M-p c") #'compile)
 (define-key exwm-mode-map (kbd "M-p f") #'flutter-run-or-hot-reload)
 (define-key exwm-mode-map (kbd "M-p n") #'my/open-nvim-external)
+(define-key exwm-mode-map (kbd "M-p t") #'tab-bar-mode)
 #+end_src
 
 *** TOGGLE FULL SCREEN
@@ -1568,3 +1589,11 @@ For regular Emacs buffers, maximizes the window within the frame."
 (define-key exwm-mode-map (kbd "M-f f") #'my/toggle-fullscreen-buffer)
 (define-key exwm-mode-map (kbd "M-f F") 'find-file)
 #+end_src
+
+
+*** TAB BAR MODE SWITCHING
+#+begin_src emacs-lisp
+(define-key exwm-mode-map (kbd "M-<left>") #'tab-previous)
+(define-key exwm-mode-map (kbd "M-<right>") #'tab-next)
+#+end_src
+
