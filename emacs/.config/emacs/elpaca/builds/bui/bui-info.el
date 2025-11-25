@@ -1,1 +1,0 @@
-/home/fake/.config/emacs/elpaca/repos/bui/bui-info.el

@@ -1,1 +1,0 @@
-/home/fake/.config/emacs/elpaca/repos/spinner/spinner.el

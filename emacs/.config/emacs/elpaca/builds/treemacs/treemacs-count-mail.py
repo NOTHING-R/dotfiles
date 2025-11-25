@@ -1,1 +1,0 @@
-/home/fake/.config/emacs/elpaca/repos/treemacs/src/scripts/treemacs-count-mail.py

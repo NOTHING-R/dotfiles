@@ -1,6 +1,0 @@
-/etc/pacman.d/mirrorlist
-/etc/pacman.d/#mirrorlist#
-/sudo:root@localhost:/home/fake/dotfiles/emacs/.config/emacs/config.org
-/tmp/#!sudo:root@localhost:!home!fake!dotfiles!emacs!.config!emacs!config.org#
-/home/fake/INSTALL_SCRIPT/install.sh
-/home/fake/INSTALL_SCRIPT/#install.sh#

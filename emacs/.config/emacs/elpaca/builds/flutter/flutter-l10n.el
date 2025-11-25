@@ -1,1 +1,0 @@
-/home/fake/.config/emacs/elpaca/repos/flutter/flutter-l10n.el
