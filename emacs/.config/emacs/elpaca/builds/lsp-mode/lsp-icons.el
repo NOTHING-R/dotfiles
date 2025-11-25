@@ -1,0 +1,1 @@
+/home/fake/.config/emacs/elpaca/repos/lsp-mode/lsp-icons.el

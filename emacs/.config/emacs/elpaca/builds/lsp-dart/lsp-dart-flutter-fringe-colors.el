@@ -1,0 +1,1 @@
+/home/fake/.config/emacs/elpaca/repos/lsp-dart/lsp-dart-flutter-fringe-colors.el

@@ -1,0 +1,1 @@
+/home/fake/.config/emacs/elpaca/repos/lsp-pyright/lsp-pyright.el

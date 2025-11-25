@@ -621,13 +621,18 @@
 (setq display-time-format "%H:%M:%S")  ;; Set format to include hours, minutes, and seconds
 ;; (setq display-time-interval 1)  ;; Update the time every 1 second
 
-
 (add-hook 'exwm-init-hook
           (lambda ()
-            (run-at-time "1 sec" nil (lambda ()
-				       (start-process "nitrogen" nil "nitrogen" "--restore")))
+;; commenting nitrogen because cureently I can't install nitrogen on arch linux
+            ;; (run-at-time "1 sec" nil (lambda ()
+	    ;; 			       (start-process "nitrogen" nil "nitrogen" "--restore")))
+	    
             (run-at-time "3 sec" nil (lambda ()
 				       (start-process "nm-applet" nil "nm-applet")))
+
+
+            (run-at-time "3 sec" nil (lambda ()
+				       (start-process "feh" nil "feh" "--bg-scale" (expand-file-name "~/Downloads/tanjiro-kamado-fire-5120x2880-24474.jpg"))))
             (run-at-time "3 sec" nil (lambda ()
 				       (start-process "flameshot" nil "flameshot")))
 
@@ -1196,6 +1201,10 @@ For regular Emacs buffers, maximizes the window within the frame."
   (interactive)
   (start-process-shell-command "firefox" nil "firefox"))
 
+ (defun my/launch-librewolf ()
+  "launch firefox browser."
+  (interactive)
+  (start-process-shell-command "librewolf" nil "librewolf"))
 
 (defun my/open-nvim-external ()
   "Launch Neovim in external terminal."
@@ -1216,6 +1225,7 @@ For regular Emacs buffers, maximizes the window within the frame."
 (global-set-key (kbd "M-B") #'my/launch-firefox)
 (global-set-key (kbd "M-e") #'my/launch-thunar)
 (global-set-key (kbd "M-N") #'my/launch-nitrogen)
+(global-set-key (kbd "M-S") #'my/launch-librewolf)
 
 
 ;; EXWM-specific keybindings

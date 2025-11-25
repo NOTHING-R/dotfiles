@@ -1,0 +1,1 @@
+/home/fake/.config/emacs/elpaca/repos/elisp-tree-sitter/core/tsc-dyn-get.el

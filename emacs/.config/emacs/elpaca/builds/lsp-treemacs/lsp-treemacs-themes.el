@@ -1,0 +1,1 @@
+/home/fake/.config/emacs/elpaca/repos/lsp-treemacs/lsp-treemacs-themes.el

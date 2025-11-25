@@ -1,0 +1,1 @@
+#s(lsp-session ("/home/fake/dotfiles/nvim/.config/nvim/lua/config" "/home/fake/.config/nvim") nil #s(hash-table test equal) #s(hash-table test equal) #s(hash-table test equal))
