@@ -1,0 +1,87 @@
+// Place your key bindings in this file to override the defaults
+[
+  // ==========================
+  // Window Management (SPC-w)
+  // ==========================
+{
+  "key": "space w w",
+  "command": "workbench.action.focusNextGroup",
+  "when": "neovim.mode != 'insert' && !sideBarVisible"
+},
+{
+  "key": "space w w",
+  "command": "workbench.action.focusSideBar",
+  "when": "neovim.mode != 'insert' && sideBarVisible && !sideBarFocus"
+},
+{
+  "key": "space w w",
+  "command": "workbench.action.focusActiveEditorGroup",
+  "when": "neovim.mode != 'insert' && sideBarVisible && sideBarFocus"
+},
+
+  {
+    "key": "space w v",
+    "command": "workbench.action.splitEditorRight",
+    "when": "neovim.mode != 'insert'"
+  },
+  {
+    "key": "space w s",
+    "command": "workbench.action.splitEditorDown",
+    "when": "neovim.mode != 'insert'"
+  },
+  {
+    "key": "space w c",
+    "command": "workbench.action.closeActiveEditor",
+    "when": "neovim.mode != 'insert'"
+  },
+{
+  "key": "space w h",
+  "command": "workbench.action.focusLeftGroup",
+  "when": "neovim.mode != 'insert'"
+},
+{
+  "key": "space w l",
+  "command": "workbench.action.focusRightGroup",
+  "when": "neovim.mode != 'insert'"
+},
+{
+  "key": "space w j",
+  "command": "workbench.action.focusBelowGroup",
+  "when": "neovim.mode != 'insert'"
+},
+{
+  "key": "space w k",
+  "command": "workbench.action.focusAboveGroup",
+  "when": "neovim.mode != 'insert'"
+}
+
+  // ==========================
+  // Buffer Management (SPC-b)
+  // ==========================
+  {
+    "key": "space b p",
+    "command": "workbench.action.previousEditor",
+    "when": "neovim.mode != 'insert'"
+  },
+  {
+    "key": "space b n",
+    "command": "workbench.action.nextEditor",
+    "when": "neovim.mode != 'insert'"
+  },
+  {
+    "key": "space b k",
+    "command": "workbench.action.closeActiveEditor",
+    "when": "neovim.mode != 'insert'"
+  },
+  {
+   "key": "space e",
+   "command": "workbench.action.toggleSidebarVisibility",
+   "when": "neovim.mode != 'insert'"
+  },
+  {
+  "key": "space b b",
+  "command": "multiCommand.toggleLastTwoEditors",
+  "when": "neovim.mode != 'insert'"
+}
+]
+
