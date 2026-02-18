@@ -29,7 +29,6 @@
   - [[#emacs-keybinding][EMACS KEYBINDING]]
 - [[#setting-up-exwm][SETTING UP EXWM]]
   - [[#exwm][EXWM]]
-  - [[#test-for-virt-manager-host-key][Test for virt manager host key]]
   - [[#exwem-notification][EXWEM NOTIFICATION]]
   - [[#shortcut-for-lunching-application][SHORTCUT FOR LUNCHING APPLICATION]]
   - [[#customized-function-name][CUSTOMIZED FUNCTION NAME]]
@@ -298,6 +297,11 @@
 (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1)))
 #+end_src
 
+*** vterm toggle
+#+begin_src emacs-lisp
+(use-package vterm-toggle
+  :ensure t)
+#+end_src
 ** COUNSEL AND IVY
 #+begin_src emacs-lisp
 (use-package counsel
@@ -1257,26 +1261,6 @@ one, an error is signaled."
 ;; ====== KEYBINDING =====
 (global-set-key (kbd "M-l") #'my/lock-screen) ;; FOR EMACS
 (define-key exwm-mode-map [?\M-l] #'my/lock-screen) ;; FOR EXWM
-#+end_src
-
-** Test for virt manager host key
-#+begin_src emacs-lisp
-(add-hook 'exwm-manage-finish-hook
-          (lambda ()
-            (when (or (string-match-p "virt-manager" exwm-class-name)
-                      (string-match-p "Qemu-system" exwm-class-name)
-                      (string-match-p "qemu-system" exwm-class-name))
-              (exwm-input-set-local-simulation-keys nil)
-              (exwm-input-release-keyboard)
-              (exwm-layout-hide-mode-line))))
-
-(add-hook 'exwm-manage-finish-hook
-          (lambda ()
-            (when (string= exwm-class-name "Virt-manager")
-              ;; Always keep keyboard on host
-              (exwm-input-release-keyboard)
-              (exwm-layout-hide-mode-line))))
-
 #+end_src
 
 ** EXWEM NOTIFICATION
