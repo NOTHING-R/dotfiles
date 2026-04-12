@@ -1,9 +1,3 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
---
---
-
 -- Map Ctrl+Backspace to delete previous word in insert mode (like Ctrl-w)
 vim.keymap.set("i", "<C-BS>", "<C-w>", { desc = "Delete previous word" })
 
@@ -41,3 +35,48 @@ map("n", "<leader>bk", "<cmd>bdelete<CR>", { desc = "Kill/Close buffer" })
 -- ==========================
 map("n", "<leader>hk", "<cmd>help<CR>", { desc = "Vim help" })
 map("n", "<leader>hm", "<cmd>:messages<CR>", { desc = "Show messages" })
+
+-- extra added
+vim.keymap.set("n", "<leader>fs", function()
+  require("telescope.builtin").current_buffer_fuzzy_find()
+end, { desc = "Swiper-like search (buffer)" })
+
+-- Image feh
+vim.keymap.set("n", "<leader>i", function()
+  local file = vim.fn.expand("%:p") -- FULL path (IMPORTANT)
+  vim.fn.jobstart({ "feh", file }, { detach = true })
+end, { desc = "Open image with feh" })
+
+-- for jj exit on terminal
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
+vim.keymap.set("t", "jj", [[<C-\><C-n>]], { noremap = true, silent = true })
+
+-- For searcing files
+vim.keymap.set("n", "<leader>fF", function()
+  require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h") })
+end, { desc = "Find file from current dir" })
+
+local builtin = require("telescope.builtin")
+local fb = require("telescope").extensions.file_browser
+local wk = require("which-key")
+
+wk.add({
+  {
+    "<leader>b",
+    function()
+      builtin.find_files()
+    end,
+    desc = "Find File",
+  },
+
+  {
+    "<leader><space>",
+    function()
+      fb.file_browser({
+        path = vim.fn.expand("%:p:h"), -- current file dir (IMPORTANT)
+        select_buffer = true,
+      })
+    end,
+    desc = "File Browser (current dir)",
+  },
+})

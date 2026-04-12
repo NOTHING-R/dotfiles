@@ -12,7 +12,7 @@ return {
                                                            
                                                            
 
-      💀 WELCOME TO FAKE SYSTEM 💀
+      💀 !!!FAKE!!! EVERYTHING IS AN ILLUISION 💀
     ]]
 
     logo = string.rep("\n", 8) .. logo .. "\n\n"
