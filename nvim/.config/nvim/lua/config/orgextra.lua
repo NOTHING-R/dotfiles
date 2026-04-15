@@ -133,3 +133,6 @@ end, { desc = "Insert Zola Video" })
 vim.keymap.set("n", "<leader>zj", function()
   insert_zola_template("j")
 end, { desc = "Insert Zola Image" })
+vim.keymap.set("n", "<leader>ze", "<cmd>OrgExportZola<CR>", {
+  desc = "Export Org to Zola Markdown",
+})

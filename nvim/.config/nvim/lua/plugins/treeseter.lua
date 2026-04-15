@@ -33,10 +33,26 @@ return {
       servers = {
         ts_ls = {
           settings = {
-            typescript = { inlayHints = { includeInlayParameterNameHints = "all" } },
-            javascript = { inlayHints = { includeInlayParameterNameHints = "all" } },
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "none",
+                includeInlayFunctionLikeReturnTypeHints = false, -- add this
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "none",
+                includeInlayFunctionLikeReturnTypeHints = false, -- add this
+              },
+            },
           },
         },
+        -- ts_ls = {
+        --   settings = {
+        --     typescript = { inlayHints = { includeInlayParameterNameHints = "none" } },
+        --     javascript = { inlayHints = { includeInlayParameterNameHints = "none" } },
+        --   },
+        -- },
         -- CSS-in-JS and plain CSS
         cssls = {},
         -- HTML inside JSX

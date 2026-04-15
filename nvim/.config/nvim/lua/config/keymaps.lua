@@ -52,23 +52,26 @@ vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 vim.keymap.set("t", "jj", [[<C-\><C-n>]], { noremap = true, silent = true })
 
 -- For searcing files
-vim.keymap.set("n", "<leader>fF", function()
-  require("telescope.builtin").find_files({ cwd = vim.fn.expand("%:p:h") })
-end, { desc = "Find file from current dir" })
+-- vim.keymap.set("n", "<leader>fF", function()
+--   require("telescope.builtin").find_files({
+--     cwd = require("lazyvim.util").root(),
+--     hidden = true,
+--     no_ignore = true,
+--   })
+-- end, { desc = "Find ALL files (global)" })
 
+-- vim.keymap.set("n", "<leader>fF", function()
+--   require("telescope.builtin").find_files({
+--     cwd = require("lazyvim.util").root(),
+--   })
+-- end, { desc = "Find file from project root" })
+
+-- FUZZY FIND
 local builtin = require("telescope.builtin")
 local fb = require("telescope").extensions.file_browser
 local wk = require("which-key")
 
 wk.add({
-  {
-    "<leader>b",
-    function()
-      builtin.find_files()
-    end,
-    desc = "Find File",
-  },
-
   {
     "<leader><space>",
     function()

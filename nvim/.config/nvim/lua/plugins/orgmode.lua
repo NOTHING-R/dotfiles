@@ -34,30 +34,6 @@ return {
           v = "#+BEGIN_VERSE\n\n#+END_VERSE",
           c = "#+BEGIN_CENTER\n\n#+END_CENTER",
           l = "#+BEGIN_EXPORT latex\n\n#+END_EXPORT",
-
-          -- YouTube (y)
-          y = [[#+BEGIN_EXPORT html
-<iframe width="350" height="200"
- src="https://www.youtube.com/embed/"
- title="YouTube video player"
- frameborder="0"
- allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
- allowfullscreen>
-</iframe>
-#+END_EXPORT]],
-
-          -- Video (z)
-          z = [[#+BEGIN_EXPORT html
-<video controls width="100%">
- <source src="/videos/.mp4" type="video/mp4">
- Your browser does not support the video tag.
-</video>
-#+END_EXPORT]],
-
-          -- Image (j)
-          j = [[#+BEGIN_EXPORT html
-<img src="/folder/name" alt="IMAGE" width="300" height="220">
-#+END_EXPORT]],
         },
       })
 

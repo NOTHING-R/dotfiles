@@ -4,7 +4,7 @@ return {
     dashboard = { enabled = false },
 
     indent = {
-      enabled = false, -- ← This turns off the vertical indent guides permanently
+      enabled = true, -- ← This turns off the vertical indent guides permanently
     },
   },
 }
