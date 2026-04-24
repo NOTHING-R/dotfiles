@@ -2,12 +2,30 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+-- vim.api.nvim_set_hl(0, "RenderMarkdownH1", { fg = "#a6e3a1", bold = true })
+-- vim.api.nvim_set_hl(0, "RenderMarkdownH2", { fg = "#94e2d5", bold = true })
+-- -- vim.api.nvim_set_hl(0, "RenderMarkdownCode", { bg = "#1e1e2e" })
+-- vim.api.nvim_set_hl(0, "RenderMarkdownBullet", { fg = "#f9e2af" })
+-- vim.api.nvim_set_hl(0, "@text.title", { fg = "#a6adc8", bold = true })
+-- vim.api.nvim_set_hl(0, "@text.literal", { fg = "#bac2de" })
+-- vim.api.nvim_set_hl(0, "@markup.raw", { fg = "#cdd6f4" })
+-- vim.api.nvim_set_hl(0, "@markup.heading", { fg = "#89b4fa", bold = true })
+--
+-- -- vim.api.nvim_set_hl(0, "RenderMarkdownCode", { bg = "#1e2030" })
+-- -- or a slightly transparent-ish dark tint matching your theme, e.g.:
+--
+-- vim.api.nvim_set_hl(0, "@markup.raw.block", { bg = "NONE" })
+--
+-- vim.api.nvim_set_hl(0, "@markup.heading", { fg = "#ffffff", bold = true })
+-- vim.api.nvim_set_hl(0, "@markup.quote", { fg = "#6c6f85" })
+-- vim.api.nvim_set_hl(0, "@markup.strong", { fg = "#d14d4d", bold = true })
+
 vim.opt.termguicolors = true
 vim.cmd("highlight Normal guibg=none")
 vim.cmd("highlight NormalFloat guibg=none")
 vim.g.root_spec = { "cwd" }
 
-vim.g.inlay_hints_enabled = false
+vim.g.inlay_hints_enabled = true
 
 -- For line warp
 vim.opt.wrap = true
