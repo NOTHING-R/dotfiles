@@ -1,9 +1,10 @@
 return {
+
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-
+        -- copilot.lua only works with its own copilot lsp server
         -- HTML (only .html files)
         html = {
           filetypes = { "html" },

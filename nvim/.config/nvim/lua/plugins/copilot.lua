@@ -1,21 +1,98 @@
 return {
-  "github/copilot.vim",
-  lazy = false,
-  config = function()
-    vim.g.copilot_no_tab_map = true
+  -- Copilot
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
 
-    -- Accept suggestion with Ctrl+j
-    vim.keymap.set("i", "<C-j>", 'copilot#Accept("\\<CR>")', {
-      expr = true,
-      replace_keycodes = false,
-      desc = "Accept Copilot suggestion",
-    })
+    config = function()
+      require("copilot").setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      })
+    end,
+  },
 
-    -- Cycle through suggestions
-    vim.keymap.set("i", "<C-]>", "<Plug>(copilot-next)", { desc = "Next suggestion" })
-    vim.keymap.set("i", "<C-[>", "<Plug>(copilot-previous)", { desc = "Prev suggestion" })
+  -- nvim-cmp
+  {
+    "hrsh7th/nvim-cmp",
 
-    -- Dismiss suggestion
-    vim.keymap.set("i", "<C-e>", "<Plug>(copilot-dismiss)", { desc = "Dismiss suggestion" })
-  end,
+    dependencies = {
+      "zbirenbaum/copilot-cmp",
+    },
+
+    config = function()
+      local cmp = require("cmp")
+
+      require("copilot_cmp").setup()
+
+      cmp.setup({
+        sources = cmp.config.sources({
+          { name = "copilot" },
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "path" },
+        }),
+      })
+    end,
+  },
+
+  -- copilot-cmp
+  {
+    "zbirenbaum/copilot-cmp",
+    dependencies = {
+      "zbirenbaum/copilot.lua",
+    },
+  },
 }
+
+-- return {
+--
+--
+--   -- Copilot
+--   {
+--     "zbirenbaum/copilot.lua",
+--     cmd = "Copilot",
+--     event = "InsertEnter",
+--     config = function()
+--       require("copilot").setup({
+--         suggestion = { enabled = false },
+--         panel = { enabled = false },
+--       })
+--     end,
+--   },
+--
+--   -- Copilot CMP
+--   {
+--     "zbirenbaum/copilot-cmp",
+--     dependencies = {
+--       "zbirenbaum/copilot.lua",
+--     },
+--     config = function()
+--       require("copilot_cmp").setup()
+--     end,
+--   },
+--
+--   -- nvim-cmp setup
+--   {
+--     "hrsh7th/nvim-cmp",
+--     dependencies = {
+--       "zbirenbaum/copilot-cmp",
+--     },
+--     config = function()
+--       local cmp = require("cmp")
+--
+--       cmp.setup({
+--         sources = cmp.config.sources({
+--           { name = "copilot", group_index = 2 },
+--           { name = "nvim_lsp", group_index = 2 },
+--           { name = "luasnip", group_index = 2 },
+--         }, {
+--           { name = "buffer" },
+--           { name = "path" },
+--         }),
+--       })
+--     end,
+--   },
+-- }

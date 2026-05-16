@@ -30,7 +30,7 @@ vim.api.nvim_create_autocmd({ "BufAdd", "BufEnter", "TabEnter" }, {
 -- =========================
 -- STATUSLINE TOGGLE (lualine-safe)
 -- =========================
-vim.keymap.set("n", "<leader>us", function()
+vim.keymap.set("n", "<leader>ts", function()
   vim.g.ui_hidden = not vim.g.ui_hidden
 
   if vim.g.ui_hidden then
